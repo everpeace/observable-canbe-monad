@@ -19,7 +19,7 @@ class ObservableCanBeZipListLikeApplicative extends Spec {
   // Observable(f,g,h) <$> Observable(x,y,z) === Observable(f(x), g(y), h(z))
   // Note: point(a) generates an infinite sequence.
   implicit val zipListLikeApplicative = new Applicative[Observable] {
-    def point[A](a: => A) = interval(1.millis) map{_ => a} observeOn(scheduler)
+    def point[A](a: => A) = interval(1.nanos) map{_ => a} observeOn(scheduler)
 
     def ap[A, B](oa: => Observable[A])(of: => Observable[(A) => B]) = of.zip(oa) map {fa => fa._1(fa._2)}
   }
