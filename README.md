@@ -1,7 +1,26 @@
 ### RxJava's Observable can be a List like Monad and ZipList like Applicative functor.
 * see [src/test/scala/jx/lang/scala/scalaz/ObservableCanBeMonad.scala](https://github.com/everpeace/observable-canbe-monad/blob/master/src/test/scala/jx/lang/scala/scalaz/ObservableCanBeMonad.scala).
-* see [src/test/scala/jx/lang/scala/scalaz/ObservableCanBeZipListLikeApplicative.scala](https://github.com/everpeace/observable-canbe-monad/blob/master/src/test/scala/jx/lang/scala/scalaz/ObservableCanBeZipListLikeApplicative.scala).
+```
+  // observable monad object by standard flatMapping.
+  // this provides List monad like semantics.
+  implicit val observableMonad = new Monad[Observable]{
+      def point[A](a: => A) = Observable(a)
+      def bind[A, B](oa: Observable[A])(f: (A) => Observable[B]) = oa.flatMap(f)
+  }
+```
 
+* see [src/test/scala/jx/lang/scala/scalaz/ObservableCanBeZipListLikeApplicative.scala](https://github.com/everpeace/observable-canbe-monad/blob/master/src/test/scala/jx/lang/scala/scalaz/ObservableCanBeZipListLikeApplicative.scala).
+```
+  // This produce ZipList like Applicative. (Note: ZipList cannot be a monad.)
+  // Observable(f,g,h) <$> Observable(x,y,z) === Observable(f(x), g(y), h(z))
+  // Note: point(a) generates an infinite sequence.
+  implicit val zipListLikeApplicative = new Applicative[Observable] {
+      def point[A](a: => A) = interval(1.millis) map{_ => a} observeOn(scheduler)
+      def ap[A, B](oa: => Observable[A])(of: => Observable[(A) => B]) = of.zip(oa) map {fa => fa._1(fa._2)}
+  }
+```
+
+#### Test Result
 <pre>
 $ sbt test
 [info] Loading global plugins from /Users/everpeace/.sbt/plugins
