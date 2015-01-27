@@ -1,3 +1,5 @@
+__I'm now developing [rxscalaz](https://github.com/everpeace/rxscalaz) which provides some useful type class instances for `Observable`. Please check it out, too.__
+
 ### RxJava's Observable can be a List like Monad and ZipList like Applicative functor.
 * see [src/test/scala/jx/lang/scala/scalaz/ObservableCanBeMonad.scala](https://github.com/everpeace/observable-canbe-monad/blob/master/src/test/scala/jx/lang/scala/scalaz/ObservableCanBeMonad.scala).
 ```
